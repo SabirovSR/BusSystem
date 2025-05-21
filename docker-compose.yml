@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8008:8008"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+
+  generator:
+    build:
+      context: .
+      dockerfile: generator/Dockerfile.generator
+    environment:
+      - API_URL=http://api:8008/api/bus/passengers
+    depends_on:
+      - api
+    deploy:
+      
+
+volumes:
+  mongodb_data:
+
+
