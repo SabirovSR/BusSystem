@@ -27,7 +27,6 @@ services:
       - API_URL=http://api:8008/api/bus/passengers
     depends_on:
       - api
-    deploy:
       
 
 volumes:

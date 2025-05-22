@@ -17,14 +17,14 @@ API_URL = os.getenv("API_URL", "http://0.0.0.0:8008/api/bus/passengers")
 TOTAL_BUSES = 10  # Общее количество автобусов
 MIN_PASSENGERS = 1  # Минимальное количество пассажиров
 MAX_PASSENGERS = 15  # Максимальное количество пассажиров
-MIN_INTERVAL = 5  # Минимальный интервал между запросами (в секундах)
-MAX_INTERVAL = 15  # Максимальный интервал между запросами (в секундах)
+MIN_INTERVAL = 1  # Минимальный интервал между запросами (в секундах)
+MAX_INTERVAL = 3  # Максимальный интервал между запросами (в секундах)
 
 def generate_passenger_event():
     """Генерирует случайное событие прибытия пассажиров"""
     bus_id = random.randint(0, TOTAL_BUSES - 1)
     entered = random.randint(MIN_PASSENGERS, MAX_PASSENGERS)
-    exited = random.randint(0, entered)  # Количество вышедших не может быть больше вошедших
+    exited = random.randint(MIN_PASSENGERS, MAX_PASSENGERS)
     
     return {
         "bus_id": bus_id,

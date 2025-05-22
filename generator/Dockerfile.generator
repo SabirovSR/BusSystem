@@ -9,7 +9,7 @@ COPY app/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем исходный код
-COPY app/generator_events.py .
+COPY generator/generator_events.py .
 
 # Запускаем генератор событий
 CMD ["python", "generator_events.py"] 

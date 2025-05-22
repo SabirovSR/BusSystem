@@ -21,7 +21,12 @@ app.add_middleware(
 
 # Конфигурация
 BUS_CAPACITY = 10  # Общее количество автобусов
-DEFAULT_MAX_CAPACITY = 50  # Максимальная вместимость автобуса по умолчанию
+MAX_CAPACITY = {
+    "micro_bus": 20,
+    "bus": 30,
+    "large_bus": 50
+}
+  # Максимальная вместимость автобуса по умолчанию
 TARIFFS = {  # Тарифы в рублях за проезд
     "normal": 45
 }
@@ -30,14 +35,34 @@ TARIFFS = {  # Тарифы в рублях за проезд
 def initialize_bus(busCapacity = BUS_CAPACITY):
     if bus_system_db.bus_entity.count_documents({}) == 0:
         buses = []
-        for i in range(busCapacity):            
-            buses.append({
-                "bus_id": i,
-                "status": "free",
-                "current_count_passengers": 0,
-                "max_capacity": DEFAULT_MAX_CAPACITY,
-                "revenue": 0
-            })
+        for i in range(busCapacity):
+            if i < 5:
+                buses.append({
+                    "bus_id": i+1,
+                    "bus_type": "micro_bus",
+                    "status": "free",
+                    "current_count_passengers": 0,
+                    "max_capacity": MAX_CAPACITY["micro_bus"],
+                    "revenue": 0
+                })
+            elif i < 8:
+                buses.append({
+                    "bus_id": i+1,
+                    "bus_type": "bus",
+                    "status": "free",
+                    "current_count_passengers": 0,
+                    "max_capacity": MAX_CAPACITY["bus"],
+                    "revenue": 0
+                })
+            elif i < 10:
+                buses.append({
+                    "bus_id": i+1,
+                    "bus_type": "large_bus",
+                    "status": "free",
+                    "current_count_passengers": 0,
+                    "max_capacity": MAX_CAPACITY["large_bus"],
+                    "revenue": 0
+                })
         bus_system_db.bus_entity.insert_many(buses)
 
 initialize_bus()
@@ -135,6 +160,17 @@ async def get_all_buses_status():
         )
         for bus in buses
     ]
+
+@app.post("/api/reset-database")
+async def reset_database():
+    # Очищаем все коллекции
+    bus_system_db.bus_entity.delete_many({})
+    bus_system_db.passenger_arrivals.delete_many({})
+    
+    # Заново инициализируем автобусы
+    initialize_bus()
+    
+    return {"message": "База данных успешно сброшена"}
 
 if __name__ == "__main__":
     import uvicorn
