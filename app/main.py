@@ -138,11 +138,12 @@ async def get_bus_statistics(bus_id: int, time_range: str = "1d"):
     }))
     
     total_passengers = sum(arrival["entered"] for arrival in arrivals)
+    total_revenue = total_passengers * TARIFFS["normal"]  # Считаем доход только за выбранный период
     
     return BusStatistics(
         bus_id=bus_id,
         total_passengers=total_passengers,
-        total_revenue=bus["revenue"],
+        total_revenue=total_revenue,
         max_capacity=bus["max_capacity"],
         last_update=now
     )

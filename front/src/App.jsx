@@ -7,7 +7,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const timeRanges = ["10m", "1h", "1d", "1w"];
@@ -27,7 +26,7 @@ export default function BusDashboard() {
 
   useEffect(() => {
     fetchBusStatus(); // Первоначальная загрузка
-    const interval = setInterval(fetchBusStatus, 3000); // Обновление каждые 3 секунды
+    const interval = setInterval(fetchBusStatus, 500); // Обновление каждые 3 секунды
     
     return () => clearInterval(interval); // Очистка интервала при размонтировании
   }, []);
@@ -58,26 +57,37 @@ export default function BusDashboard() {
         <Button onClick={resetDatabase} variant="destructive">Сбросить базу данных</Button>
       </div>
 
-      <Card>
-        <CardContent className="p-4">
+      <div className="bg-amber-200 border-2 border-amber-300 rounded-lg shadow-md">
+        <div className="p-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Общая статистика</h2>
+            <p className="text-lg font-medium">
+              Общий доход: ₽{busStatus.reduce((sum, bus) => sum + bus.revenue, 0).toFixed(2)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-sky-200 border-2 border-sky-300 rounded-lg shadow-md">
+        <div className="p-4">
           <h2 className="text-xl font-semibold mb-4">Текущий статус автобусов</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {busStatus.map((bus) => (
-              <Card key={bus.bus_id} className="bg-sky-100 border-sky-200">
-                <CardContent className="p-4 space-y-2">
+              <div key={bus.bus_id} className="bg-sky-100 border-2 border-sky-200 rounded-lg shadow-sm">
+                <div className="p-4 space-y-2">
                   <p className="font-medium">Автобус #{bus.bus_id}</p>
                   <p>Статус: {bus.status}</p>
                   <p>Пассажиры: {bus.current_count_passengers}/{bus.max_capacity}</p>
                   <p>Доход: ₽{bus.revenue.toFixed(2)}</p>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-4 space-y-4">
+      <div className="bg-emerald-200 border-2 border-emerald-300 rounded-lg shadow-md">
+        <div className="p-4 space-y-4">
           <h2 className="text-xl font-semibold">Статистика автобуса</h2>
           <div className="flex flex-wrap gap-4 items-end">
             <div className="w-[120px]">
@@ -115,18 +125,16 @@ export default function BusDashboard() {
             <Button onClick={fetchStatistics}>Получить статистику</Button>
           </div>
 
-          {busStatistics && (
-            <Card className="mt-4 bg-emerald-100 border-emerald-200">
-              <CardContent className="p-4 space-y-2">
-                <p><strong>ID автобуса:</strong> {busStatistics.bus_id}</p>
-                <p><strong>Всего пассажиров:</strong> {busStatistics.total_passengers}</p>
-                <p><strong>Общий доход:</strong> ₽{busStatistics.total_revenue.toFixed(2)}</p>
-                <p><strong>Последнее обновление:</strong> {new Date(busStatistics.last_update).toLocaleString()}</p>
-              </CardContent>
-            </Card>
-          )}
-        </CardContent>
-      </Card>
+          <div className="mt-4 bg-emerald-100 border-2 border-emerald-200 rounded-lg shadow-sm">
+            <div className="p-4 space-y-2">
+              <p><strong>ID автобуса:</strong> {busStatistics?.bus_id || '-'}</p>
+              <p><strong>Всего пассажиров:</strong> {busStatistics?.total_passengers || '0'}</p>
+              <p><strong>Общий доход:</strong> ₽{busStatistics?.total_revenue?.toFixed(2) || '0.00'}</p>
+              <p><strong>Последнее обновление:</strong> {busStatistics?.last_update ? new Date(busStatistics.last_update).toLocaleString() : '-'}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import requests
 import random
 import time
-from datetime import datetime
 import logging
 import os
 
@@ -22,7 +21,7 @@ MAX_INTERVAL = 3  # Максимальный интервал между зап�
 
 def generate_passenger_event():
     """Генерирует случайное событие прибытия пассажиров"""
-    bus_id = random.randint(0, TOTAL_BUSES - 1)
+    bus_id = random.randint(1, TOTAL_BUSES)
     entered = random.randint(MIN_PASSENGERS, MAX_PASSENGERS)
     exited = random.randint(MIN_PASSENGERS, MAX_PASSENGERS)
     
